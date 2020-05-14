@@ -1,40 +1,24 @@
 package matt.springframework.recipebook.springrecipe.controllers;
 
-import matt.springframework.recipebook.springrecipe.domain.Category;
-import matt.springframework.recipebook.springrecipe.domain.UnitOfMeasure;
-import matt.springframework.recipebook.springrecipe.repositories.CategoryRepository;
-import matt.springframework.recipebook.springrecipe.repositories.UnitOfMeasureRepository;
+import matt.springframework.recipebook.springrecipe.services.RecipeService;
+import matt.springframework.recipebook.springrecipe.services.RecipeServiceImpl;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.sql.SQLOutput;
-import java.util.Optional;
 
 @Controller
 public class IndexController {
 
-    private CategoryRepository categoryRepository;
-    private UnitOfMeasureRepository unitOfMeasureRepository;
+    private final RecipeServiceImpl recipeServiceImpl;
 
-
-
-    public IndexController(CategoryRepository categoryRepository, UnitOfMeasureRepository unitOfMeasureRepository) {
-
-        this.categoryRepository = categoryRepository;
-        this.unitOfMeasureRepository = unitOfMeasureRepository;
-
+    public IndexController(RecipeServiceImpl recipeServiceImpl) {
+        this.recipeServiceImpl = recipeServiceImpl;
     }
 
     @RequestMapping({",","/","/index"})
-    public String getIndexPage(){
-        System.out.println("Some Message... Hello World");
+    public String getIndexPage(Model model){
 
-        Optional<Category> categoryOptional = categoryRepository.findByDescription("American");
-        Optional<UnitOfMeasure> unitOfMeasureOptional = unitOfMeasureRepository.findByDescription("Tablespoon");
-
-        System.out.println("Cat id is: " + categoryOptional.get().getId());
-        System.out.println("UOM id is: " + unitOfMeasureOptional.get().getId());
-
+    model.addAttribute("recipes",recipeServiceImpl.getRecipes());
 
 
         return "index";
