@@ -1,12 +1,15 @@
 package matt.springframework.recipebook.springrecipe.services;
 
+import lombok.extern.slf4j.Slf4j;
 import matt.springframework.recipebook.springrecipe.domain.Recipe;
 import matt.springframework.recipebook.springrecipe.repositories.RecipeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Service
 public class RecipeServiceImpl implements RecipeService {
 
@@ -18,7 +21,8 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public Set<Recipe> getRecipes() {
-        Set<Recipe> recipeSet = new HashSet<>();
+        log.debug("I'm in the service");
+       Set<Recipe> recipeSet = new HashSet<>();
         recipeRepository.findAll().iterator().forEachRemaining(recipeSet::add);
         return recipeSet;
     }
