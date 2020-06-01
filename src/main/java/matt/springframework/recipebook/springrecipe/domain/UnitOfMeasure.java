@@ -1,12 +1,13 @@
 package matt.springframework.recipebook.springrecipe.domain;
 
 import lombok.*;
+import matt.springframework.recipebook.springrecipe.commands.UnitOfMeasureCommand;
 
 import javax.persistence.*;
 
 @Data
 @Entity
-public class UnitOfMeasure {
+public class UnitOfMeasure extends UnitOfMeasureCommand {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

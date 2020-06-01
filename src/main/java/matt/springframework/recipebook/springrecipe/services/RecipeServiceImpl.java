@@ -1,9 +1,13 @@
 package matt.springframework.recipebook.springrecipe.services;
 
 import lombok.extern.slf4j.Slf4j;
+import matt.springframework.recipebook.springrecipe.commands.RecipeCommand;
+import matt.springframework.recipebook.springrecipe.converters.RecipeCommandToRecipe;
+import matt.springframework.recipebook.springrecipe.converters.RecipeToRecipeCommand;
 import matt.springframework.recipebook.springrecipe.domain.Recipe;
 import matt.springframework.recipebook.springrecipe.repositories.RecipeRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.swing.text.html.Option;
 import java.util.HashSet;
@@ -16,9 +20,14 @@ import java.util.Set;
 public class RecipeServiceImpl implements RecipeService {
 
     private final RecipeRepository recipeRepository;
+    private final RecipeToRecipeCommand recipeToRecipeCommand;
+    private final RecipeCommandToRecipe recipeCommandToRecipe;
 
-    public RecipeServiceImpl(RecipeRepository recipeRepository) {
+
+    public RecipeServiceImpl(RecipeRepository recipeRepository, RecipeToRecipeCommand recipeToRecipeCommand, RecipeCommandToRecipe recipeCommandToRecipe) {
         this.recipeRepository = recipeRepository;
+        this.recipeToRecipeCommand = recipeToRecipeCommand;
+        this.recipeCommandToRecipe = recipeCommandToRecipe;
     }
 
     @Override
@@ -38,5 +47,24 @@ public class RecipeServiceImpl implements RecipeService {
         }
 
         return recipeOptional.get();
+
     }
+
+    @Override
+    @Transactional
+    public RecipeCommand findByCommandId(Long l) {
+        return recipeToRecipeCommand.convert(findById(l));
+    }
+
+
+    @Override
+    @Transactional
+    public RecipeCommand saveRecipeCommand(RecipeCommand command) {
+        Recipe detechedRecipe= recipeCommandToRecipe.convert(command);
+
+        Recipe savedRecipe = recipeRepository.save(detechedRecipe);
+        log.debug("SavedRecipeID " + savedRecipe.getId());
+        return recipeToRecipeCommand.convert(savedRecipe);
+    }
+
 }
